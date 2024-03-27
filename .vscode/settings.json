@@ -1,0 +1,9 @@
+{
+    "rust-analyzer.linkedProjects": [
+        "./programs/web3-todo-app/Cargo.toml",
+    ],
+    "rust-analyzer.completion.autoimport.enable": true,
+    "[rust]": {
+        "editor.bracketPairColorization.enabled": true,
+    }
+}
