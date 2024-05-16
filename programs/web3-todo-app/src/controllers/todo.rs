@@ -1,6 +1,11 @@
 use std::borrow::{ Borrow, BorrowMut };
 
-use anchor_lang::{ context::Context, solana_program::program_error::ProgramError, Key };
+use anchor_lang::{
+    context::Context,
+    solana_program::program_error::ProgramError,
+    Key,
+    ToAccountInfo,
+};
 
 use crate::{
     context::todo_contexts::{
@@ -29,16 +34,17 @@ pub fn create_todo(_ctx: Context<CreateTodo>, _content: String) -> Result<(), Pr
     Ok(())
 }
 pub fn find_todo_by_id(_ctx: Context<findTodoById>, _id: usize) -> Result<(), ProgramError> {
-    let user = _ctx.accounts.user.as_ref();
-    for todo in user.todos.iter() {
-        if todo.id == _id {
-            todo.clone();
+    let user: &anchor_lang::prelude::Account<crate::models::user::User> = _ctx.accounts.user.borrow();
+    let todo = for item in user.todos.iter() {
+        if item.id == _id {
+            item.clone();
         }
-    }
-    Ok(())
+    };
+
+    Ok(todo)
 }
 pub fn find_todo_by_wallet(_ctx: Context<findTodoByWallet>) -> Result<Vec<Todo>, ProgramError> {
-    let user: &anchor_lang::prelude::Account<crate::models::user::User> = _ctx.accounts.user.as_ref();
+    let user: &anchor_lang::prelude::Account<crate::models::user::User> = _ctx.accounts.user.borrow();
     let mut result: Vec<Todo> = vec![];
     for todo in user.todos.iter() {
         if todo.owner == user.authority {
@@ -48,7 +54,7 @@ pub fn find_todo_by_wallet(_ctx: Context<findTodoByWallet>) -> Result<Vec<Todo>,
     Ok(result)
 }
 pub fn find_todo_is_done(_ctx: Context<FindTodoIsDone>) -> Result<Vec<Todo>, ProgramError> {
-    let user: &anchor_lang::prelude::Account<crate::models::user::User> = &_ctx.accounts.user;
+    let user: &anchor_lang::prelude::Account<crate::models::user::User> = _ctx.accounts.user.borrow();
     let mut result: Vec<Todo> = vec![];
     for todo in user.todos.iter() {
         if todo.is_done == true {
@@ -58,7 +64,7 @@ pub fn find_todo_is_done(_ctx: Context<FindTodoIsDone>) -> Result<Vec<Todo>, Pro
     Ok(result)
 }
 pub fn find_todo_not_done(_ctx: Context<FindTodoNotDone>) -> Result<Vec<Todo>, ProgramError> {
-    let user: &anchor_lang::prelude::Account<crate::models::user::User> = &_ctx.accounts.user;
+    let user: &anchor_lang::prelude::Account<crate::models::user::User> = _ctx.accounts.user.borrow();
     let mut result: Vec<Todo> = vec![];
     for todo in user.todos.iter() {
         if todo.is_done == false {
@@ -68,7 +74,9 @@ pub fn find_todo_not_done(_ctx: Context<FindTodoNotDone>) -> Result<Vec<Todo>, P
     Ok(result)
 }
 pub fn mark_todo_done(_ctx: Context<MarkTodoDone>, _id: usize) -> Result<(), ProgramError> {
-    let user = _ctx.accounts.user.borrow_mut();
+    let user: &mut anchor_lang::prelude::Account<crate::models::user::User> = _ctx.accounts.user.borrow_mut();
+    let todo: &mut anchor_lang::prelude::Account<Todo> = _ctx.accounts.todo.borrow_mut();
+    todo.is_done = true;
     for todo in user.todos.iter_mut() {
         if todo.id == _id {
             todo.is_done = true;
