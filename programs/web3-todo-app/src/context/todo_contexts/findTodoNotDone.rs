@@ -3,7 +3,7 @@ use anchor_lang::prelude::*;
 use crate::models::user::User;
 
 #[derive(Accounts)]
-pub struct FindTodoIsDone<'info> {
+pub struct FindTodoNotDone<'info> {
     #[account(mut)]
     pub authority: Signer<'info>,
     #[account(mut,has_one = authority)]

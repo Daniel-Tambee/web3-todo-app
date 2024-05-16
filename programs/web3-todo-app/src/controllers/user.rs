@@ -1,6 +1,6 @@
 use anchor_lang::solana_program::program_error::ProgramError;
 
-use crate::models::{todo::Todo, user::*};
+use crate::models::{ todo::*, user::* };
 
 pub fn create_user() -> Result<User, ProgramError> {
     todo!()
