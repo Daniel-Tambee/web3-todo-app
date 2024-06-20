@@ -1,13 +1,16 @@
-use anchor_lang::solana_program::program_error::ProgramError;
+use std::borrow::BorrowMut;
 
-use crate::models::{ todo::*, user::* };
+use anchor_lang::{ context::Context, solana_program::program_error::ProgramError };
 
-pub fn create_user() -> Result<User, ProgramError> {
-    todo!()
+use crate::{ context::user_contexts::createUser::CreateUser, models::{ todo::*, user::* } };
+
+pub fn create_user(_ctx: Context<CreateUser>) -> Result<(), ProgramError> {
+    let user = _ctx.accounts.user.as_mut();
+    Ok(())
 }
 pub fn find_user_todos() -> Result<Vec<Todo>, ProgramError> {
     todo!()
 }
-pub fn find_user_by_id() -> Result<User, ProgramError> {
+pub fn find_user_by_id() -> Result<(), ProgramError> {
     todo!()
 }

@@ -7,11 +7,23 @@ declare_id!("9VELjY4xnvMWThciCAuMDZNiDYSCd3341BD7PmU1UxwC");
 #[program]
 pub mod web3_todo_app {
     pub use super::*;
-    pub use controllers::todo::{
-        create_todo,
-        find_todo_by_id,
-        find_todo_by_wallet,
-        find_todo_is_done,
+
+    use controllers::{
+        todo::{
+            create_todo as create_todo_controller,
+            find_todo_by_id as find_todo_by_id_controller,
+            find_todo_by_wallet as find_todo_by_wallet_controller,
+            find_todo_is_done as find_todo_is_done_controller,
+        },
+        user::{ create_user, find_user_by_id, find_user_todos },
     };
-    pub use controllers::user::{ create_user, find_user_by_id, find_user_todos };
+
+    pub use context::todo_contexts::{
+        createTodo::CreateTodo,
+        findTodoById::findTodoById,
+        findTodoByWallet::findTodoByWallet,
+        findTodoIsDone::FindTodoIsDone,
+        findTodoNotDone::FindTodoNotDone,
+    };
+
 }

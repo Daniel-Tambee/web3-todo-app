@@ -4,7 +4,6 @@ use anchor_lang::{
     context::Context,
     solana_program::program_error::ProgramError,
     Key,
-    ToAccountInfo,
 };
 
 use crate::{
